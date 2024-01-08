@@ -1,0 +1,81 @@
+{
+	"name": "country",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sql_country",
+						"type": "DatasetReference"
+					},
+					"name": "sqlcountry"
+				},
+				{
+					"dataset": {
+						"referenceName": "vm_country",
+						"type": "DatasetReference"
+					},
+					"name": "vmcountry"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "countrych2",
+						"type": "DatasetReference"
+					},
+					"name": "countrych2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "union1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> sqlcountry",
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> vmcountry",
+				"sqlcountry, vmcountry union(byName: true)~> union1",
+				"union1 select(mapColumn(",
+				"          Country,",
+				"          Latitude,",
+				"          Longitude",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['countrych2.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> countrych2"
+			]
+		}
+	}
+}

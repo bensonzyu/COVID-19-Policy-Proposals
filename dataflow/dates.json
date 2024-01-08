@@ -1,0 +1,130 @@
+{
+	"name": "dates",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sql_dates",
+						"type": "DatasetReference"
+					},
+					"name": "sqldates"
+				},
+				{
+					"dataset": {
+						"referenceName": "vm_dates",
+						"type": "DatasetReference"
+					},
+					"name": "vmdates"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "datesch2",
+						"type": "DatasetReference"
+					},
+					"name": "datesch2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "union1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          DateKey as integer,",
+				"          FullDate as date,",
+				"          isWeekDay as boolean,",
+				"          DayOfWeek as integer,",
+				"          DayOfMonth as integer,",
+				"          DayOfQuarter as integer,",
+				"          DayOfYear as integer,",
+				"          DayName as string,",
+				"          WeekOfYear as integer,",
+				"          WeekName as string,",
+				"          MonthOfYear as integer,",
+				"          MonthName as string,",
+				"          CalendarQuarter as integer,",
+				"          CalendarQuarterName as string,",
+				"          CalendarYear as integer,",
+				"          FiscalMonth as integer,",
+				"          FiscalMonthName as string,",
+				"          FiscalQuarter as integer,",
+				"          FiscalQuarterName as string,",
+				"          FiscalYear as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> sqldates",
+				"source(output(",
+				"          DateKey as integer,",
+				"          FullDate as date,",
+				"          isWeekDay as boolean,",
+				"          DayOfWeek as integer,",
+				"          DayOfMonth as integer,",
+				"          DayOfQuarter as integer,",
+				"          DayOfYear as integer,",
+				"          DayName as string,",
+				"          WeekOfYear as integer,",
+				"          WeekName as string,",
+				"          MonthOfYear as integer,",
+				"          MonthName as string,",
+				"          CalendarQuarter as integer,",
+				"          CalendarQuarterName as string,",
+				"          CalendarYear as integer,",
+				"          FiscalMonth as integer,",
+				"          FiscalMonthName as string,",
+				"          FiscalQuarter as integer,",
+				"          FiscalQuarterName as string,",
+				"          FiscalYear as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> vmdates",
+				"sqldates, vmdates union(byName: true)~> union1",
+				"union1 select(mapColumn(",
+				"          DateKey,",
+				"          FullDate,",
+				"          isWeekDay,",
+				"          DayOfWeek,",
+				"          DayOfMonth,",
+				"          DayOfQuarter,",
+				"          DayOfYear,",
+				"          DayName,",
+				"          WeekOfYear,",
+				"          WeekName,",
+				"          MonthOfYear,",
+				"          MonthName,",
+				"          CalendarQuarter,",
+				"          CalendarQuarterName,",
+				"          CalendarYear,",
+				"          FiscalMonth,",
+				"          FiscalMonthName,",
+				"          FiscalQuarter,",
+				"          FiscalQuarterName,",
+				"          FiscalYear",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['datesch2.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> datesch2"
+			]
+		}
+	}
+}

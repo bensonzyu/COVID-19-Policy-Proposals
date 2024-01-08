@@ -1,0 +1,21 @@
+{
+	"name": "countrych2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "countrych2",
+				"folderPath": "country",
+				"fileSystem": "ods-team9"
+			},
+			"compressionCodec": "none"
+		},
+		"schema": []
+	}
+}

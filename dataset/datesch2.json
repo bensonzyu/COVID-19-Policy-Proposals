@@ -1,0 +1,21 @@
+{
+	"name": "datesch2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "datesch2",
+				"folderPath": "dates",
+				"fileSystem": "ods-team9"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

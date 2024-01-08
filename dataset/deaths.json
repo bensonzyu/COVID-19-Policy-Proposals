@@ -1,0 +1,21 @@
+{
+	"name": "deaths",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "deaths",
+				"folderPath": "metrics",
+				"fileSystem": "ods-team9"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

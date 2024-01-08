@@ -1,0 +1,22 @@
+{
+	"name": "sql_dates",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CaladanBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sqldates.parquet",
+				"folderPath": "dates",
+				"container": "sqldatabase"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

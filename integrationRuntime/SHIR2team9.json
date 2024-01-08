@@ -1,0 +1,7 @@
+{
+	"name": "SHIR2team9",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "selfhosted IR on VM"
+	}
+}

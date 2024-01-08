@@ -1,0 +1,73 @@
+{
+	"name": "deaths",
+	"properties": {
+		"description": "From challenge2 container metrics to ODS\n",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Metrics",
+						"type": "DatasetReference"
+					},
+					"name": "Metrics"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "deaths",
+						"type": "DatasetReference"
+					},
+					"name": "Deaths"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID as integer,",
+				"          Updated as date,",
+				"          Confirmed as integer,",
+				"          Confirmed_Change as integer,",
+				"          Deaths as integer,",
+				"          Deaths_Change as integer,",
+				"          Recovered as integer,",
+				"          Recovered_Change as integer,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5),",
+				"          ISO2 as string,",
+				"          ISO3 as string,",
+				"          Country_Region as string,",
+				"          load_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> Metrics",
+				"Metrics select(mapColumn(",
+				"          ID,",
+				"          Updated,",
+				"          Deaths,",
+				"          Deaths_Change,",
+				"          Country_Region",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['deaths.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> Deaths"
+			]
+		}
+	}
+}

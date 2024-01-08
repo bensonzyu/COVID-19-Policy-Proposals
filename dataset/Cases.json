@@ -1,0 +1,21 @@
+{
+	"name": "Cases",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "cases",
+				"folderPath": "metrics",
+				"fileSystem": "ods-team9"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

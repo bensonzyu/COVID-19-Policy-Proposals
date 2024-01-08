@@ -1,0 +1,22 @@
+{
+	"name": "sql_metrics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CaladanBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sqlmetrics.parquet",
+				"folderPath": "covidmetrics",
+				"container": "sqldatabase"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

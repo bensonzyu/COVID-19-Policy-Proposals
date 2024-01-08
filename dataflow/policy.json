@@ -1,0 +1,88 @@
+{
+	"name": "policy",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "policy",
+						"type": "DatasetReference"
+					},
+					"name": "policy"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "policych2",
+						"type": "DatasetReference"
+					},
+					"name": "policych2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CountryName as string,",
+				"          CountryCode as string,",
+				"          Date as timestamp,",
+				"          C1_School_closing as double,",
+				"          C1_Flag as boolean,",
+				"          C2_Workplace_closing as double,",
+				"          C2_Flag as boolean,",
+				"          C3_Cancel_public_events as double,",
+				"          C3_Flag as boolean,",
+				"          C4_Restrictions_on_gatherings as double,",
+				"          C4_Flag as boolean,",
+				"          C5_Close_public_transport as double,",
+				"          C5_Flag as boolean,",
+				"          C6_Stay_at_home_requirements as double,",
+				"          C6_Flag as boolean,",
+				"          C7_Restrictions_on_internal_movement as long,",
+				"          C7_Flag as boolean,",
+				"          C8_International_travel_controls as double,",
+				"          E1_Income_support as double,",
+				"          E1_Flag as boolean,",
+				"          E2_Debt_contract_relief as double,",
+				"          E3_Fiscal_measures as double,",
+				"          E4_International_support as double,",
+				"          H1_Public_information_campaigns as double,",
+				"          H1_Flag as boolean,",
+				"          H2_Testing_policy as double,",
+				"          H3_Contact_tracing as double,",
+				"          H4_Emergency_investment_in_healthcare as double,",
+				"          H5_Investment_in_vaccines as double,",
+				"          StringencyIndex as double,",
+				"          StringencyIndexForDisplay as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> policy",
+				"policy select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     format: 'parquet',",
+				"     partitionFileNames:['policych2.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> policych2"
+			]
+		}
+	}
+}

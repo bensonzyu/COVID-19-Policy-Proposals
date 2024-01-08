@@ -1,0 +1,73 @@
+{
+	"name": "recoveries",
+	"properties": {
+		"description": "from  metrics in challange2 container to ODS\n",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Metrics",
+						"type": "DatasetReference"
+					},
+					"name": "metrics"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "recoveries",
+						"type": "DatasetReference"
+					},
+					"name": "recoveries"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID as integer,",
+				"          Updated as date,",
+				"          Confirmed as integer,",
+				"          Confirmed_Change as integer,",
+				"          Deaths as integer,",
+				"          Deaths_Change as integer,",
+				"          Recovered as integer,",
+				"          Recovered_Change as integer,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5),",
+				"          ISO2 as string,",
+				"          ISO3 as string,",
+				"          Country_Region as string,",
+				"          load_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> metrics",
+				"metrics select(mapColumn(",
+				"          ID,",
+				"          Updated,",
+				"          Recovered,",
+				"          Recovered_Change,",
+				"          Country_Region",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['recoveries.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> recoveries"
+			]
+		}
+	}
+}
